@@ -5,18 +5,15 @@ import styles from '../../styles/Concert.module.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
-import supabase from '../../supabase';
-
+import supabase from '../../config/supabase';
 const ConcertPage = ({ concert }) => {
   const router = useRouter();
-  async function deleteConcert(e) {
-  
-  }
+  async function deleteConcert(e) {}
   return (
     <Layout>
       <div className={styles.concert}>
         <div className={styles.controls}>
-          <Link href={`/concerts/edit/${concert.id}`}>Edit Concert</Link>
+          <Link href={`/concert/edit/${concert.id}`}>Edit Concert</Link>
 
           <a href="#" className={styles.delete} onClick={deleteConcert}>
             Delete Concert
@@ -30,11 +27,12 @@ const ConcertPage = ({ concert }) => {
         <ToastContainer />
         <div className={styles.image}>
           <Image
+            priority={true}
             src={
-                concert.concert_image.includes(".jpg")
-                  ? concert.concert_image.url
-                  : '/images/event-default.png'
-              }
+              concert.concert_image.includes('.jpg')
+                ? concert.concert_image.url
+                : '/images/event-default.png'
+            }
             width={960}
             height={600}
             alt={concert.description}
@@ -42,7 +40,7 @@ const ConcertPage = ({ concert }) => {
         </div>
 
         <h3>Performers:</h3>
-        <p>{concert.artist}</p>
+        <p>{concert.performers}</p>
         <h3>Description:</h3>
         <p>{concert.description}</p>
         <h3>Venue: {concert.venue}</h3>
@@ -61,7 +59,6 @@ export async function getServerSideProps({ query: { slug } }) {
     .from('concert')
     .select('*, concert_image(id, url) ')
     .eq('slug', slug);
-    console.log(res)
   return { props: { concert: res.data[0] } };
 }
 
