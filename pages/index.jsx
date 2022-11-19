@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Layout from '../components/Layout';
 
 import ConcertItem from '../components/ConcertItem';
-import supabase from '../config/supabase';
+import {supabase} from '../config/supabase';
 
 export default function Home({ concert }) {
   return (

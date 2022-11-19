@@ -4,7 +4,12 @@ import { useRouter } from 'next/router';
 import styles from '../styles/Form.module.css';
 import { concertFormSchema } from '../schemas/add';
 
-function FormConcert({ handleSubmit, formInitValues, buttonName }) {
+function FormConcert({
+  handleSubmit,
+  formInitValues,
+  buttonName,
+  handleImageChange,
+}) {
   return (
     <Formik
       initialValues={
@@ -98,8 +103,9 @@ function FormConcert({ handleSubmit, formInitValues, buttonName }) {
               />
             </div>
           </div>
+
           <div>
-            <label htmlFor="description">Event Description</label>
+            <label htmlFor="image">Event Description</label>
 
             <Field as="textarea" name="description" id="description" />
             <ErrorMessage
@@ -108,6 +114,12 @@ function FormConcert({ handleSubmit, formInitValues, buttonName }) {
               className={styles.error}
             />
           </div>
+
+
+          <div>
+            <input type="file" name="sample" id="sample" onChange={handleImageChange} />
+          </div>
+
           <button type="submit" className="btn" disabled={isSubmitting}>
             {buttonName}
           </button>

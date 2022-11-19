@@ -1,16 +1,30 @@
-import supabase from './../../../config/supabase';
+import {supabase} from './../../../config/supabase';
 import Link from 'next/link';
 import FormEvent from '../../../components/Form';
 import Layout from '../../../components/Layout';
 import { ToastContainer, toast } from 'react-toastify';
+import { useState } from 'react';
 
 function EditPage({ concert }) {
+  const [image, setImage] = useState();
+
   const handleSubmit = async (values) => {
-    // const res = await supabase
-    //   .from('concert')
-    //   .select('*, concert_image(id, url) ')
-    //   .eq('id', id);
-    // console.log(res);
+    delete values.concert_image;
+    const { data, error } = await supabase
+      .from('concert')
+      .update(values)
+      .eq('id', 1)
+      .select();
+    console.log(data);
+  };
+
+  const handleImageChange = (e) => {
+    console.log(e.target.files[0]);
+
+    if (image) {
+      // Delete The Image if there is any and upload new one
+      console.log('Image state not empty');
+    } else console.log('Image state Empty');
   };
 
   return (
@@ -23,6 +37,8 @@ function EditPage({ concert }) {
         handleSubmit={handleSubmit}
         formInitValues={concert}
         buttonName="Update Event"
+        formType="update"
+        handleImageChange={handleImageChange}
       />
     </Layout>
   );

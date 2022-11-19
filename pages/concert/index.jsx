@@ -1,6 +1,6 @@
 import ConcertItem from '../../components/ConcertItem';
 import Layout from '../../components/Layout';
-import supabase from '../../config/supabase';
+import {supabase} from '../../config/supabase';
 
 const ConcertsPage = ({ concerts }) => {
   return (

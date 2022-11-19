@@ -4,16 +4,39 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormConcert from '../../components/Form';
 import { useRouter } from 'next/router';
-import supabase from '../../config/supabase';
+import { countSameSlug, supabase } from '../../config/supabase';
+import { useState } from 'react';
+import { createSlug, formatName } from '../../config/utils';
 
 const AddConcertPage = () => {
   const router = useRouter();
 
-  const handleSubmit = async (values) => {
-    
+  const [image, setImage] = useState();
 
-    if (!res.ok) toast.error('Something Went Wrong');
+  const handleSubmit = async (values) => {
+    values.name = formatName(values.name);
+
+    const slug = `${createSlug(values.name)}-${
+      (await countSameSlug(values.name)) + 1
+    }`;
+
+    values.slug = slug;
+
+    const { data } = await supabase.from('concert').insert(values).select();
+
+    console.log(data);
+
+    // if (!res.ok) toast.error('Something Went Wrong');
     // else router.push('/events');
+  };
+
+  const handleImageChange = (e) => {
+    console.log(e.target.files[0]);
+
+    if (image) {
+      // Add image to storage but wait for the id of the concert
+      console.log('Image state not empty');
+    } else console.log('Image state Empty');
   };
 
   return (
@@ -26,6 +49,8 @@ const AddConcertPage = () => {
         handleSubmit={handleSubmit}
         buttonName="Add Concert"
         formInitValues={null}
+        formType="create"
+        handleImageChange={handleImageChange}
       />
     </Layout>
   );

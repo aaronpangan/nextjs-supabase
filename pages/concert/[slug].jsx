@@ -5,7 +5,7 @@ import styles from '../../styles/Concert.module.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
-import supabase from '../../config/supabase';
+import {supabase} from '../../config/supabase';
 const ConcertPage = ({ concert }) => {
   const router = useRouter();
   async function deleteConcert(e) {}
