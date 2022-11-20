@@ -26,5 +26,6 @@ export async function getServerSideProps() {
   const res = await supabase
     .from('concert')
     .select('*, concert_image(id, url) '); // for multiple joins = ('*', table2(column_name))
+
   return { props: { concert: res } };
 }

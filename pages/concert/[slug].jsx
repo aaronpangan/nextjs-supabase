@@ -5,7 +5,7 @@ import styles from '../../styles/Concert.module.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
-import {supabase} from '../../config/supabase';
+import { supabase } from '../../config/supabase';
 const ConcertPage = ({ concert }) => {
   const router = useRouter();
   async function deleteConcert(e) {}
@@ -28,11 +28,7 @@ const ConcertPage = ({ concert }) => {
         <div className={styles.image}>
           <Image
             priority={true}
-            src={
-              concert.concert_image.includes('.jpg')
-                ? concert.concert_image.url
-                : '/images/event-default.png'
-            }
+            src={concert.concert_image[0].url ?? '/images/event-default.png'}
             width={960}
             height={600}
             alt={concert.description}

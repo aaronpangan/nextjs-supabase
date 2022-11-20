@@ -10,7 +10,6 @@ async function countSameSlug(name) {
     .from('concert')
     .select('*', { count: 'exact' })
     .ilike('name', `%${name}%`);
-  console.log(count);
 
   return count;
 }

@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { countSameSlug, supabase } from '../../config/supabase';
 import { useState } from 'react';
 import { createSlug, formatName } from '../../config/utils';
+import { v4 as uuidv4 } from 'uuid';
 
 const AddConcertPage = () => {
   const router = useRouter();
@@ -24,19 +25,26 @@ const AddConcertPage = () => {
 
     const { data } = await supabase.from('concert').insert(values).select();
 
-    console.log(data);
+    console.log(data[0].id);
+    if (image) {
+      const storage = await supabase.storage
+        .from('image')
+        .upload(`concert/${image.name}-${uuidv4()}`, image);
 
+      const addImage = await supabase
+        .from('concert_image')
+        .insert({
+          concert_id: data[0].id,
+          url: process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL + storage.data.path,
+        })
+        .select();
+    } else console.log('Image not FOund');
     // if (!res.ok) toast.error('Something Went Wrong');
     // else router.push('/events');
   };
 
   const handleImageChange = (e) => {
-    console.log(e.target.files[0]);
-
-    if (image) {
-      // Add image to storage but wait for the id of the concert
-      console.log('Image state not empty');
-    } else console.log('Image state Empty');
+    setImage(e.target.files[0]);
   };
 
   return (
