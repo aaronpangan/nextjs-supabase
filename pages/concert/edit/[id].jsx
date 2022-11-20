@@ -15,6 +15,14 @@ function EditPage({ concert }) {
       .update(values)
       .eq('id', 1)
       .select();
+
+
+
+
+      if (image){
+
+        
+      }
     console.log(data);
   };
 

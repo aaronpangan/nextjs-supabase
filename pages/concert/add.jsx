@@ -36,6 +36,7 @@ const AddConcertPage = () => {
         .insert({
           concert_id: data[0].id,
           url: process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL + storage.data.path,
+          path: storage.data.path,
         })
         .select();
     } else console.log('Image not FOund');
