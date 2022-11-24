@@ -8,8 +8,9 @@ const ConcertItem = ({ concert }) => {
       <div className={styles.img}>
         <Image
           src={
+            concert.concert_image.length > 0 ?
             concert.concert_image[0].url
-              ?? '/images/event-default.png'
+              : '/images/event-default.png'
           }
           width={170}
           height={100}

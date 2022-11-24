@@ -28,7 +28,11 @@ const ConcertPage = ({ concert }) => {
         <div className={styles.image}>
           <Image
             priority={true}
-            src={concert.concert_image[0].url ?? '/images/event-default.png'}
+            src={
+              concert.concert_image.length > 0
+                ? concert.concert_image[0].url
+                : '/images/event-default.png'
+            }
             width={960}
             height={600}
             alt={concert.description}
@@ -55,6 +59,12 @@ export async function getServerSideProps({ query: { slug } }) {
     .from('concert')
     .select('*, concert_image(id, url) ')
     .eq('slug', slug);
+
+  if (res.data.length === 0)
+    return {
+      notFound: true,
+    };
+
   return { props: { concert: res.data[0] } };
 }
 

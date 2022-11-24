@@ -25,7 +25,6 @@ const AddConcertPage = () => {
 
     const { data } = await supabase.from('concert').insert(values).select();
 
-    console.log(data[0].id);
     if (image) {
       const storage = await supabase.storage
         .from('image')

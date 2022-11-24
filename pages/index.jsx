@@ -27,5 +27,6 @@ export async function getServerSideProps() {
     .from('concert')
     .select('*, concert_image(id, url) '); // for multiple joins = ('*', table2(column_name))
 
+
   return { props: { concert: res } };
 }
