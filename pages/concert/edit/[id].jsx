@@ -1,6 +1,6 @@
 import { supabase } from './../../../config/supabase';
 import Link from 'next/link';
-import FormEvent from '../../../components/Form';
+import FormEvent from '../../../components/ConcertForm';
 import Layout from '../../../components/Layout';
 import { ToastContainer, toast } from 'react-toastify';
 import { useState } from 'react';

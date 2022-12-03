@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Layout from '../../components/Layout';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import FormConcert from '../../components/Form';
+import FormConcert from '../../components/ConcertForm';
 import { useRouter } from 'next/router';
 import { countSameSlug, supabase } from '../../config/supabase';
 import { useState } from 'react';
