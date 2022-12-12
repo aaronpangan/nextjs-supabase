@@ -15,7 +15,7 @@ const LoginPage = () => {
 
     if (data.user === null && data.session === null) {
       console.log('LOGIN FAILED');
-      router.push('/')
+      router.push('/');
     }
 
     console.log('data');

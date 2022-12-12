@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormConcert from '../../components/ConcertForm';
 import { useRouter } from 'next/router';
-import { countSameSlug, supabase } from '../../config/supabase';
+import { supabase } from '../../config/supabase';
 import { useState } from 'react';
 import { createSlug, formatName } from '../../config/utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,9 +17,12 @@ const AddConcertPage = () => {
   const handleSubmit = async (values) => {
     values.name = formatName(values.name);
 
-    const slug = `${createSlug(values.name)}-${
-      (await countSameSlug(values.name)) + 1
-    }`;
+    const { count } = await supabase
+      .from('concert')
+      .select('*', { count: 'exact' })
+      .ilike('name', `%${name}%`);
+
+    const slug = `${createSlug(values.name)}-${count + 1}`;
 
     values.slug = slug;
 
