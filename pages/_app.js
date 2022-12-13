@@ -8,13 +8,7 @@ function MyApp({ Component, pageProps }) {
   const [supabaseClient] = useState(() => createBrowserSupabaseClient());
   const router = useRouter();
 
-  useEffect(() => {
-    supabaseClient.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN') {router.push('/');
-      console.log(event)
-    }
-    });
-  });
+
 
   return (
     <SessionContextProvider

@@ -1,7 +1,7 @@
 import styles from '../styles/AuthForm.module.css';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 import { Form, Formik, Field, ErrorMessage } from 'formik';
-import { authFormSchema } from '../schemas/auth';
 
 const AuthForm = ({
   handleSubmit,
@@ -9,10 +9,13 @@ const AuthForm = ({
   submitName,
   validationSchema,
 }) => {
-  console.log(initialValues);
+  const supabaseClient = useSupabaseClient();
 
-  const handleSocialLogin = () => {
+  const handleSocialLogin = async () => {
     console.log('GOOGLE');
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+    });
   };
 
   return (

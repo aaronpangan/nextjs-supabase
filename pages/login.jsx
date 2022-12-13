@@ -1,14 +1,17 @@
 import { useRouter } from 'next/router';
 import AuthForm from '../components/AuthForm';
 import Layout from '../components/Layout';
-import { supabase } from '../config/supabase';
 import { loginFormSchema } from '../schemas/auth';
+import { useEffect } from 'react';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
 const LoginPage = () => {
   const router = useRouter();
+  const supabaseClient = useSupabaseClient();
 
   const loginSubmit = async (values) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
@@ -40,3 +43,20 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+export async function getServerSideProps(ctx) {
+  const supabase = createServerSupabaseClient(ctx);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session)
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+
+  return { props: { session } };
+}

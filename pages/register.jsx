@@ -1,21 +1,21 @@
 import Layout from '../components/Layout';
-import { supabase } from '../config/supabase';
 import { registerFormSchema } from '../schemas/auth';
 import AuthForm from './../components/AuthForm';
-
-const registerSubmit = async (values) => {
-  console.log('Register SUbmit');
-
-  const { data, error } = await supabase.auth.signUp({
-    email: values.email,
-    password: values.password,
-  });
-
-  console.log(data);
-  console.log(error);
-};
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 const RegisterPage = () => {
+  const supabaseClient = useSupabaseClient();
+
+  const registerSubmit = async (values) => {
+    console.log('Register SUbmit');
+
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: values.email,
+      password: values.password,
+    });
+  };
+
   return (
     <Layout>
       <AuthForm
@@ -33,3 +33,20 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+
+export async function getServerSideProps(ctx) {
+  const supabase = createServerSupabaseClient(ctx);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session)
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+
+  return { props: { session } };
+}
