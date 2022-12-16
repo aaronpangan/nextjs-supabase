@@ -6,19 +6,36 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
 import { supabase } from '../../config/supabase';
+import { useUser } from '@supabase/auth-helpers-react';
 const ConcertPage = ({ concert }) => {
   const router = useRouter();
-  async function deleteConcert(e) {}
+  const user = useUser();
+  async function deleteConcert(e) {
+    const { data, error } = await supabase
+      .from('concert')
+      .delete()
+      .eq('id', concert.id);
+
+    if (concert.concert_image.length > 0) {
+      const deleteImage = await supabase.storage
+        .from('image')
+        .remove([concert.concert_image[0].path]);
+    }
+  }
   return (
     <Layout>
       <div className={styles.concert}>
-        <div className={styles.controls}>
-          <Link href={`/concert/edit/${concert.id}`}>Edit Concert</Link>
+        {user ? (
+          <div className={styles.controls}>
+            <Link href={`/concert/edit/${concert.id}`}>Edit concert</Link>
 
-          <a href="#" className={styles.delete} onClick={deleteConcert}>
-            Delete Concert
-          </a>
-        </div>
+            <a href="#" className={styles.delete} onClick={deleteConcert}>
+              Delete concert
+            </a>
+          </div>
+        ) : (
+          <></>
+        )}
 
         <span>
           {new Date(concert.date).toLocaleDateString()} at {concert.time}
@@ -57,7 +74,7 @@ const ConcertPage = ({ concert }) => {
 export async function getServerSideProps({ query: { slug } }) {
   const res = await supabase
     .from('concert')
-    .select('*, concert_image(id, url) ')
+    .select('*, concert_image(id, url, path) ')
     .eq('slug', slug);
 
   if (res.data.length === 0)

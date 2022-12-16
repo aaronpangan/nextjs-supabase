@@ -18,7 +18,7 @@ const Header = () => {
     const { error } = await supabaseClient.auth.signOut();
     if (!error) {
       console.log('Successfully Log Out');
-      router.push('/login');
+      router.push('/');
     }
   };
 
