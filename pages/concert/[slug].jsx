@@ -14,20 +14,23 @@ const ConcertPage = ({ concert }) => {
     const { data, error } = await supabase
       .from('concert')
       .delete()
-      .eq('id', concert.id);
+      .eq('id', concert.id)
+      .eq('user_id', user.id);
 
     if (concert.concert_image.length > 0) {
       const deleteImage = await supabase.storage
         .from('image')
         .remove([concert.concert_image[0].path]);
     }
+    if (!error) router.push('/dashboard');
   }
+
   return (
     <Layout>
       <div className={styles.concert}>
-        {user ? (
+        {user?.id === concert.user_id ? (
           <div className={styles.controls}>
-            <Link href={`/concert/edit/${concert.id}`}>Edit concert</Link>
+            <Link href={`/concert/edit/${concert?.id}`}>Edit concert</Link>
 
             <a href="#" className={styles.delete} onClick={deleteConcert}>
               Delete concert

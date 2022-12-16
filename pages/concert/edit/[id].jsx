@@ -5,8 +5,12 @@ import Layout from '../../../components/Layout';
 import { ToastContainer, toast } from 'react-toastify';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useUser } from '@supabase/auth-helpers-react';
+import { useRouter } from 'next/router';
 
 function EditPage({ concert, currentConcertImage }) {
+  const user = useUser();
+  const router = useRouter();
   const [image, setImage] = useState();
 
   const handleSubmit = async (values) => {
@@ -15,6 +19,7 @@ function EditPage({ concert, currentConcertImage }) {
       .from('concert')
       .update(values)
       .eq('id', concert.id)
+      .eq('user_id', user.id)
       .select();
     if (image) {
       if (currentConcertImage) {
@@ -61,6 +66,7 @@ function EditPage({ concert, currentConcertImage }) {
           .select();
       }
     }
+    router.push('/dashboard');
   };
 
   const handleImageChange = (e) => {

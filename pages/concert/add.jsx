@@ -8,13 +8,16 @@ import { supabase } from '../../config/supabase';
 import { useState } from 'react';
 import { createSlug, formatName } from '../../config/utils';
 import { v4 as uuidv4 } from 'uuid';
+import { useUser } from '@supabase/auth-helpers-react';
 
 const AddConcertPage = () => {
   const router = useRouter();
-
+  const user = useUser()
   const [image, setImage] = useState();
 
   const handleSubmit = async (values) => {
+    values.user_id = user.id
+   
     values.name = formatName(values.name);
 
     const { count } = await supabase
@@ -44,6 +47,8 @@ const AddConcertPage = () => {
     } else console.log('Image not FOund');
     // if (!res.ok) toast.error('Something Went Wrong');
     // else router.push('/events');
+
+    router.push('/dashboard')
   };
 
   const handleImageChange = (e) => {
