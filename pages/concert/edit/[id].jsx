@@ -1,21 +1,23 @@
-import { supabase } from './../../../config/supabase';
 import Link from 'next/link';
 import FormEvent from '../../../components/ConcertForm';
 import Layout from '../../../components/Layout';
 import { ToastContainer, toast } from 'react-toastify';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { useUser } from '@supabase/auth-helpers-react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
 function EditPage({ concert, currentConcertImage }) {
+  const supabaseClient = useSupabaseClient();
+
   const user = useUser();
   const router = useRouter();
   const [image, setImage] = useState();
 
   const handleSubmit = async (values) => {
     delete values.concert_image;
-    const { data } = await supabase
+    const { data } = await supabaseClient
       .from('concert')
       .update(values)
       .eq('id', concert.id)
@@ -26,11 +28,11 @@ function EditPage({ concert, currentConcertImage }) {
         // Delete image in bucket
         // ADd new Image in bucket
 
-        const uploadNewImage = await supabase.storage
+        const uploadNewImage = await supabaseClient.storage
           .from('image')
           .upload(`concert/${image.name}-${uuidv4()}`, image);
 
-        const addImage = await supabase
+        const addImage = await supabaseClient
           .from('concert_image')
           .update({
             url:
@@ -41,7 +43,7 @@ function EditPage({ concert, currentConcertImage }) {
           .eq('concert_id', data[0].id)
           .select();
 
-        const deleteImage = await supabase.storage
+        const deleteImage = await supabaseClient.storage
           .from('image')
           .remove([`${currentConcertImage.path}`]);
 
@@ -50,11 +52,11 @@ function EditPage({ concert, currentConcertImage }) {
         // Add new Image in bucket
         // Create new data in concert_images
 
-        const uploadNewImage = await supabase.storage
+        const uploadNewImage = await supabaseClient.storage
           .from('image')
           .upload(`concert/${image.name}-${uuidv4()}`, image);
 
-        const addImage = await supabase
+        const addImage = await supabaseClient
           .from('concert_image')
           .insert({
             concert_id: data[0].id,
@@ -90,7 +92,18 @@ function EditPage({ concert, currentConcertImage }) {
   );
 }
 
-export async function getServerSideProps({ query: { id } }) {
+export async function getServerSideProps(ctx) {
+  const id = ctx.query.id;
+  const supabase = createServerSupabaseClient(ctx);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session)
+    return {
+      notFound: true,
+    };
+
   const res = await supabase
     .from('concert')
     .select('*, concert_image(id, url, path) ')
